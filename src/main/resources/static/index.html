@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Reminder Application</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-pills"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>MEDICINE REMINDER</h2>
+                    <span>Health Companion</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#add-medicine" class="nav-item" data-section="add-medicine">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>Add Medicine</span>
+                </a>
+                <a href="#medicines" class="nav-item" data-section="medicines">
+                    <i class="fa-solid fa-prescription-bottle-medical"></i>
+                    <span>Medicines</span>
+                </a>
+                <a href="#schedule" class="nav-item" data-section="schedule">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <span>Today's Schedule</span>
+                </a>
+                <a href="#upcoming" class="nav-item" data-section="upcoming">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Upcoming</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="college-info">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <div>
+                        <p>Java Web Project</p>
+                        <small>Spring Boot + MySQL</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1 id="page-heading">Dashboard</h1>
+                    <p class="subtitle">Stay on track with your prescribed medical schedule</p>
+                </div>
+                <div class="header-right">
+                    <div class="live-clock">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="clock-display">00:00:00 AM</span>
+                    </div>
+                </div>
+            </header>
+
+            <div id="toast-container" class="toast-container"></div>
+
+            <section id="section-dashboard" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-medicines">0</h3>
+                            <p>Total Medicines</p>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-today-medicines">0</h3>
+                            <p>Today's Medicines</p>
+                        </div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-next-reminder-time">--:--</h3>
+                            <p id="stat-next-reminder-name">Next Reminder</p>
+                        </div>
+                    </div>
+                    <div class="stat-card teal">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-taken-count">0</h3>
+                            <p>Taken Today</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card shadow-sm grid-col-span-2">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-list-check"></i> Today's Schedule Overview</h2>
+                            <button class="btn btn-outline btn-sm" onclick="switchSection('schedule')">View Full Schedule</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="dashboard-schedule-container" class="schedule-timeline">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
+                        </div>
+                        <div class="card-body quick-actions-body">
+                            <button class="btn btn-primary btn-block" onclick="switchSection('add-medicine')">
+                                <i class="fa-solid fa-plus"></i> Add New Medicine
+                            </button>
+                            <button class="btn btn-secondary btn-block" onclick="switchSection('medicines')">
+                                <i class="fa-solid fa-magnifying-glass"></i> Search & Manage
+                            </button>
+                            <button class="btn btn-outline btn-block" onclick="checkDueRemindersManual()">
+                                <i class="fa-solid fa-arrows-rotate"></i> Check Due Reminders
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-add-medicine" class="content-section">
+                <div class="card shadow-md form-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-prescription-bottle-medical"></i> Add New Medicine</h2>
+                        <p>Fill out the prescription details to create a new reminder</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="add-medicine-form" novalidate>
+                            <div class="form-group">
+                                <label for="medicineName">Medicine Name <span class="required">*</span></label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fa-solid fa-capsules"></i>
+                                    <input type="text" id="medicineName" name="medicineName" placeholder="e.g. Paracetamol" required>
+                                </div>
+                                <span class="error-text" id="err-medicineName"></span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="dosage">Dosage <span class="required">*</span></label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fa-solid fa-tablets"></i>
+                                        <input type="text" id="dosage" name="dosage" placeholder="e.g. 1 tablet or 5ml" required>
+                                    </div>
+                                    <span class="error-text" id="err-dosage"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="time">Scheduled Time <span class="required">*</span></label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fa-regular fa-clock"></i>
+                                        <input type="time" id="time" name="time" required>
+                                    </div>
+                                    <span class="error-text" id="err-time"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frequency">Frequency <span class="required">*</span></label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fa-solid fa-rotate"></i>
+                                    <select id="frequency" name="frequency" required>
+                                        <option value="" disabled selected>Select frequency</option>
+                                        <option value="Once a day">Once a day</option>
+                                        <option value="Twice a day">Twice a day</option>
+                                        <option value="Three times a day">Three times a day</option>
+                                        <option value="Custom">Custom</option>
+                                    </select>
+                                </div>
+                                <span class="error-text" id="err-frequency"></span>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-floppy-disk"></i> Save Medicine
+                                </button>
+                                <button type="button" class="btn btn-light" id="btn-cancel-add">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-medicines" class="content-section">
+                <div class="card shadow-sm">
+                    <div class="card-header list-header">
+                        <div>
+                            <h2><i class="fa-solid fa-notes-medical"></i> All Medicines</h2>
+                            <p>View, edit, search, or delete registered medicines</p>
+                        </div>
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="search-input" placeholder="Search medicines...">
+                            <button id="btn-clear-search" class="clear-search-btn" title="Clear Search">&times;</button>
+                        </div>
+                    </div>
+                    <div class="card-body padding-0">
+                        <div class="table-responsive">
+                            <table class="data-table" id="medicines-table">
+                                <thead>
+                                    <tr>
+                                        <th>Medicine Name</th>
+                                        <th>Dosage</th>
+                                        <th>Scheduled Time</th>
+                                        <th>Frequency</th>
+                                        <th>Today's Status</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="medicines-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="medicines-empty-state" class="empty-state hidden">
+                            <i class="fa-solid fa-prescription-bottle-slash"></i>
+                            <h3>No medicines found</h3>
+                            <p>Add your first medicine to start building your reminder schedule.</p>
+                            <button class="btn btn-primary" onclick="switchSection('add-medicine')">
+                                <i class="fa-solid fa-plus"></i> Add Medicine
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-schedule" class="content-section">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-calendar-day"></i> Today's Schedule</h2>
+                        <p>Medicines arranged chronologically for today</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="today-schedule-list" class="schedule-cards">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-upcoming" class="content-section">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-hourglass-half"></i> Upcoming Reminders</h2>
+                        <p>Medicines scheduled later today</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="upcoming-schedule-list" class="upcoming-grid">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="app-footer">
+                <p><i class="fa-solid fa-shield-halved"></i> <strong>Disclaimer:</strong> This application is strictly a reminder system. It does NOT recommend medicines, prescribe treatments, or suggest dosages. All medicine information must be entered according to your official medical prescription.</p>
+            </footer>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-pen-to-square"></i> Edit Medicine</h3>
+                <button class="close-modal" id="btn-close-edit">&times;</button>
+            </div>
+            <form id="edit-medicine-form">
+                <input type="hidden" id="edit-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit-medicineName">Medicine Name</label>
+                        <input type="text" id="edit-medicineName" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-dosage">Dosage</label>
+                            <input type="text" id="edit-dosage" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-time">Scheduled Time</label>
+                            <input type="time" id="edit-time" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-frequency">Frequency</label>
+                        <select id="edit-frequency" required>
+                            <option value="Once a day">Once a day</option>
+                            <option value="Twice a day">Twice a day</option>
+                            <option value="Three times a day">Three times a day</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" id="btn-cancel-edit">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-card modal-sm">
+            <div class="modal-header text-danger">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> Confirm Delete</h3>
+                <button class="close-modal" id="btn-close-delete">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="delete-medicine-name">this medicine</strong>?</p>
+                <p class="text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" id="btn-cancel-delete">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btn-confirm-delete"><i class="fa-solid fa-trash-can"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="reminder-modal">
+        <div class="modal-card reminder-card shadow-lg">
+            <div class="reminder-banner">
+                <div class="bell-ring-icon">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <h2>MEDICINE REMINDER</h2>
+                <p>It is time to take your scheduled medicine.</p>
+            </div>
+            <div class="modal-body reminder-body">
+                <div class="reminder-details">
+                    <div class="detail-row">
+                        <span class="label">Medicine:</span>
+                        <strong class="value" id="reminder-medicine-name">Paracetamol</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Dosage:</span>
+                        <span class="value" id="reminder-dosage">1 tablet</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Scheduled Time:</span>
+                        <span class="value highlight-time" id="reminder-time">10:00 AM</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer reminder-footer">
+                <button type="button" class="btn btn-success btn-lg" id="btn-reminder-take">
+                    <i class="fa-solid fa-check-double"></i> Mark as Taken
+                </button>
+                <button type="button" class="btn btn-light" id="btn-reminder-dismiss">
+                    Dismiss
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
