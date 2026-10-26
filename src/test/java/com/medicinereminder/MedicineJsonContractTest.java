@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.medicinereminder.config.JacksonConfig;
 import com.medicinereminder.model.Medicine;
 
 class MedicineJsonContractTest {
@@ -21,9 +21,10 @@ class MedicineJsonContractTest {
         medicine.setFrequency("Once a day");
         medicine.setLastTakenDate(LocalDate.now());
 
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        ObjectMapper objectMapper = new JacksonConfig().objectMapper();
         String json = objectMapper.writeValueAsString(medicine);
 
         assertThat(json).contains("\"isTakenToday\":true");
+        assertThat(json).contains("\"time\":\"09:00:00\"");
     }
 }

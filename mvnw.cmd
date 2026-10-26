@@ -17,6 +17,7 @@
 @REM Execute Maven
 @set MAVEN_JAVA_EXE="%JAVA_HOME%\bin\java.exe"
 @if not exist %MAVEN_JAVA_EXE% set MAVEN_JAVA_EXE=java
+@for %%I in ("%~dp0.") do @set "MAVEN_PROJECTBASEDIR=%%~fI"
 
 %MAVEN_JAVA_EXE% -version >NUL 2>&1
 @if %ERRORLEVEL% NEQ 0 (
@@ -24,7 +25,7 @@
   goto error
 )
 
-%MAVEN_JAVA_EXE% -cp "%~dp0\.mvn\wrapper\maven-wrapper.jar" org.apache.maven.wrapper.MavenWrapperMain %*
+%MAVEN_JAVA_EXE% -Dmaven.multiModuleProjectDirectory="%MAVEN_PROJECTBASEDIR%" -cp "%~dp0\.mvn\wrapper\maven-wrapper.jar" org.apache.maven.wrapper.MavenWrapperMain %*
 @if %ERRORLEVEL% NEQ 0 goto error
 goto end
 
